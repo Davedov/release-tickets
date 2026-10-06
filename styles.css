@@ -1,0 +1,73 @@
+:root {
+	--background-color: #f5f5f5;
+	--text-color: #333;
+	--card-background-color: #fff;
+	--primary-color: #3498db;
+	--secondary-color: #2ecc71;
+	--margin: 5px;
+	--padding: 5px;
+	--rounding: 5px;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: var(--background-color);
+	color: var(--text-color);
+}
+
+header {
+	background-color: var(--primary-color);
+	padding: var(--padding);
+	text-align: center;
+}
+
+main {
+	flex: 1;
+	padding: var(--padding);
+}
+
+footer {
+	background-color: var(--secondary-color);
+	padding: var(--padding);
+}
+
+table,
+th,
+td {
+	border: 1px solid var(--primary-color);
+	padding: var(--padding);
+	border-collapse: collapse;
+}
+
+.main-info {
+	display: flex;
+	flex-direction: row;
+}
+
+.main-info article {
+	flex: 1;
+	margin: var(--margin);
+	padding: var(--padding);
+	border: 1px solid var(--primary-color);
+	border-radius: var(--rounding);
+	background-color: var(--card-background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background-color: #1e1e1e;
+		--text-color: #f5f5f5;
+		--card-background-color: #2c2c2c;
+		--primary-color: #2980b9;
+		--secondary-color: #27ae60;
+	}
+}

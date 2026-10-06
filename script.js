@@ -122,6 +122,16 @@ const tickets = [
 	},
 ];
 //#endregion
+//#region get elements
+const tableTickets = document.getElementById("tickets-list");
+const ulReleaseAnalysis = document.getElementById("release-analysis-list");
+const divReleaseDecision = document.getElementById("release-decidsion");
+//#endregion
+//#region event listeners
+document.addEventListener("DOMContentLoaded", () => {
+	displayTickets();
+});
+//#endregion
 //#region functions
 function ticketById(id) {
 	if (typeof id !== "number") return null;
@@ -225,5 +235,45 @@ function ticketsReport() {
 		totalHours: totalWorkHours,
 		decision: decision,
 	};
+}
+
+function displayTickets() {
+	tickets.forEach((ticket) => {
+		const tr = document.createElement("tr");
+
+		const tdId = document.createElement("td");
+		tdId.textContent = ticket.id;
+		tr.appendChild(tdId);
+
+		const tdTitle = document.createElement("td");
+		tdTitle.textContent = ticket.title;
+		tr.appendChild(tdTitle);
+
+		const tdSeverity = document.createElement("td");
+		tdSeverity.textContent = ticket.severity;
+		tr.appendChild(tdSeverity);
+
+		const tdStatus = document.createElement("td");
+		tdStatus.textContent = ticket.status;
+		tr.appendChild(tdStatus);
+
+		const tdOwner = document.createElement("td");
+		tdOwner.textContent = ticket.owner ? ticket.owner : "Unassigned";
+		tr.appendChild(tdOwner);
+
+		const tdRemainingHours = document.createElement("td");
+		tdRemainingHours.textContent = ticket.remainingHours;
+		tr.appendChild(tdRemainingHours);
+
+		const tdCustomerVip = document.createElement("td");
+		tdCustomerVip.textContent = ticket.customerVip ? "Yes" : "No";
+		tr.appendChild(tdCustomerVip);
+
+		const tdBlocked = document.createElement("td");
+		tdBlocked.textContent = ticket.blocked ? "Yes" : "No";
+		tr.appendChild(tdBlocked);
+
+		tableTickets.appendChild(tr);
+	});
 }
 //#endregion
