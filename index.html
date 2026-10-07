@@ -14,6 +14,21 @@
 			<section id="main-info" class="main-info">
 				<article id="tickets" class="tickets">
 					<h2>tickets</h2>
+					<div>
+						<p>Filter by classification:</p>
+						<ul id="classification-filters" class="classification-filters">
+							<li><button data-classification="all" class="selected">All</button></li>
+							<li><button data-classification="active">Active</button></li>
+							<li><button data-classification="done">Done</button></li>
+							<li><button data-classification="unassigned">Unassigned</button></li>
+							<li><button data-classification="priority">Priority</button></li>
+							<li><button data-classification="release_blocker">Release Blocker</button></li>
+						</ul>
+						<label for="search-bar">
+							Search:
+							<input type="text" id="search-bar" placeholder="Search by title" />
+						</label>
+					</div>
 					<table>
 						<thead>
 							<tr>
@@ -25,15 +40,21 @@
 								<th>Remaining Hours</th>
 								<th>customerVip</th>
 								<th>Blocked</th>
+								<th>classification</th>
 							</tr>
 						</thead>
 						<tbody id="tickets-list"></tbody>
 					</table>
+					<div>
+						<p id="no-tickets-message" class="warning hidden no-tickets-message">
+							No tickets found
+						</p>
+					</div>
 				</article>
 				<article id="release-analysis">
 					<h2>Release Analysis</h2>
-					<ul id="release-analysis-list"></ul>
-					<div id="release-decidsion"></div>
+					<ul id="release-analysis-list" class="release-analysis-list"></ul>
+					<div id="release-decision" class="release-decision"></div>
 				</article>
 			</section>
 		</main>
