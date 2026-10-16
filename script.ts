@@ -175,7 +175,7 @@ const tableTickets = getRequiredElement<HTMLElement>("tickets-list");
 const ulReleaseAnalysis = getRequiredElement<HTMLElement>("release-analysis-list");
 const divReleaseDecision = getRequiredElement<HTMLElement>("release-decision");
 const ulClassificationFilters = getRequiredElement<HTMLElement>("classification-filters");
-const inputSearchBar = getRequiredElement<HTMLInputElement>("#search-bar");
+const inputSearchBar = getRequiredElement<HTMLInputElement>("search-bar");
 const pNoTicketsMessage = getRequiredElement<HTMLElement>("no-tickets-message");
 //#endregion
 //#region global variables
@@ -210,7 +210,7 @@ inputSearchBar.addEventListener("input", (event) => {
 //#endregion
 //#region functions
 
-function filterTickets(ticketsList = tickets): void {
+function filterTickets(ticketsList: ticket[] = tickets): void {
 	const filteredTickets: ticket[] = ticketsList.filter((ticket) => {
 		const title: string = ticket.title.toLowerCase();
 		const classification: filterClassification = classifyTicket(
@@ -322,7 +322,7 @@ function getTicketsReport(): ticketsReport {
 	};
 }
 
-function displayTickets(ticketsList = tickets): void {
+function displayTickets(ticketsList: ticket[] = tickets): void {
 	ticketsList.forEach((ticket) => {
 		const tr: HTMLTableRowElement = document.createElement("tr");
 
