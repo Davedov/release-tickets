@@ -1,5 +1,44 @@
+//#region types
+type ticketClassification = "RELEASE_BLOCKER" | "PRIORITY" | "UNASSIGNED" | "DONE" | "ACTIVE";
+type ticketStatus = "open" | "testing" | "done";
+type filterClassification =
+	| "all"
+	| "release_blocker"
+	| "priority"
+	| "unassigned"
+	| "done"
+	| "active";
+type releaseDecision = "BLOCK" | "REVIEW" | "RELEASE";
+
+type ticket = {
+	id: number;
+	title: string;
+	severity: number;
+	status: ticketStatus;
+	owner: string | null;
+	remainingHours: number;
+	customerVip: boolean;
+	blocked: boolean;
+};
+type conciseTicket = {
+	id: number;
+	title: string;
+	owner: string | null;
+	classification: ticketClassification;
+};
+type ticketsReport = {
+	totalTickets: number;
+	doneTickets: number;
+	unassignedTickets: number;
+	releaseBlockers: number;
+	priorityTickets: number;
+	activeTickets: number;
+	totalRemainingHours: number;
+	decision: releaseDecision;
+};
+//#endregion
 //#region data
-const tickets = [
+const tickets: ticket[] = [
 	{
 		id: 101,
 		title: "Login outage",
@@ -123,16 +162,25 @@ const tickets = [
 ];
 //#endregion
 //#region get elements
-const tableTickets = document.getElementById("tickets-list");
-const ulReleaseAnalysis = document.getElementById("release-analysis-list");
-const divReleaseDecision = document.getElementById("release-decision");
-const ulClassificationFilters = document.getElementById("classification-filters");
-const inputSearchBar = document.getElementById("search-bar");
-const pNoTicketsMessage = document.getElementById("no-tickets-message");
+function getRequiredElement<T extends HTMLElement>(id: string): T {
+	const element = document.getElementById(id);
+
+	if (!element) {
+		throw new Error(`Required element "#${id}" was not found`);
+	}
+
+	return element as T;
+}
+const tableTickets = getRequiredElement<HTMLElement>("tickets-list");
+const ulReleaseAnalysis = getRequiredElement<HTMLElement>("release-analysis-list");
+const divReleaseDecision = getRequiredElement<HTMLElement>("release-decision");
+const ulClassificationFilters = getRequiredElement<HTMLElement>("classification-filters");
+const inputSearchBar = getRequiredElement<HTMLInputElement>("#search-bar");
+const pNoTicketsMessage = getRequiredElement<HTMLElement>("no-tickets-message");
 //#endregion
 //#region global variables
-let ticketFilter = "all";
-let ticketsSearch = "";
+let ticketFilter: filterClassification = "all";
+let ticketsSearch: string = "";
 //#endregion
 //#region event listeners
 document.addEventListener("DOMContentLoaded", () => {
@@ -141,27 +189,33 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 ulClassificationFilters.addEventListener("click", (event) => {
-	if (event.target.tagName !== "BUTTON") return;
+	if (!(event.target instanceof HTMLButtonElement)) return;
+	if (!event.target.dataset.classification) return;
 
 	ulClassificationFilters.querySelectorAll("button").forEach((button) => {
 		button.classList.remove("selected");
 	});
 	event.target.classList.add("selected");
-	ticketFilter = event.target.dataset.classification;
+
+	ticketFilter = event.target.dataset.classification as filterClassification;
 	filterTickets();
 });
 
 inputSearchBar.addEventListener("input", (event) => {
+	if (!(event.target instanceof HTMLInputElement)) return;
+
 	ticketsSearch = event.target.value.toLowerCase();
 	filterTickets();
 });
 //#endregion
 //#region functions
 
-function filterTickets(ticketsList = tickets) {
-	const filteredTickets = ticketsList.filter((ticket) => {
-		const title = ticket.title.toLowerCase();
-		const classification = classifyTicket(ticket).toLowerCase();
+function filterTickets(ticketsList = tickets): void {
+	const filteredTickets: ticket[] = ticketsList.filter((ticket) => {
+		const title: string = ticket.title.toLowerCase();
+		const classification: filterClassification = classifyTicket(
+			ticket,
+		).toLowerCase() as filterClassification;
 		return (
 			title.includes(ticketsSearch) &&
 			(ticketFilter === "all" || classification === ticketFilter)
@@ -178,8 +232,8 @@ function filterTickets(ticketsList = tickets) {
 	displayTickets(filteredTickets);
 }
 
-function ticketsToDo() {
-	const toDoTickets = [];
+function ticketsToDo(): ticket[] {
+	const toDoTickets: ticket[] = [];
 
 	tickets.forEach((ticket) => {
 		if (ticket.blocked && ticket.severity >= 4) {
@@ -194,72 +248,63 @@ function ticketsToDo() {
 	return toDoTickets;
 }
 
-function totalHours() {
+function totalHours(): number {
 	return tickets.reduce((total, ticket) => total + ticket.remainingHours, 0);
 }
 
-function conciseTickets() {
-	const conciseTickets = [];
+function conciseTickets(): conciseTicket[] {
+	const conciseTicketsList: conciseTicket[] = [];
 	tickets.forEach((ticket) => {
-		const classification = classifyTicket(ticket);
+		const classification: ticketClassification = classifyTicket(ticket);
 
-		const conciseTicket = {
+		const conciseTicketItem: conciseTicket = {
 			id: ticket.id,
 			title: ticket.title,
 			owner: ticket.owner,
 			classification: classification,
 		};
-		conciseTickets.push(conciseTicket);
+		conciseTicketsList.push(conciseTicketItem);
 	});
-	return conciseTickets;
+	return conciseTicketsList;
 }
 
-function classifyTicket(ticket) {
-	let classification = "";
-
-	if (ticket.severity >= 4 && ticket.blocked) {
-		classification = "RELEASE_BLOCKER";
-	} else if (ticket.severity === 5 && ticket.status === "open") {
-		classification = "RELEASE_BLOCKER";
-	} else if (ticket.severity >= 3 && ticket.customerVip && ticket.status !== "done") {
-		classification = "PRIORITY";
-	} else if (ticket.owner === null) {
-		classification = "UNASSIGNED";
-	} else if (ticket.status === "done") {
-		classification = "DONE";
-	} else {
-		classification = "ACTIVE";
-	}
-	return classification;
+function classifyTicket(ticket: ticket): ticketClassification {
+	if (ticket.severity >= 4 && ticket.blocked) return "RELEASE_BLOCKER";
+	if (ticket.severity === 5 && ticket.status === "open") return "RELEASE_BLOCKER";
+	if (ticket.severity >= 3 && ticket.customerVip && ticket.status !== "done")
+		return "PRIORITY";
+	if (ticket.owner === null) return "UNASSIGNED";
+	if (ticket.status === "done") return "DONE";
+	return "ACTIVE";
 }
 
-function ticketsReport() {
-	const conciseTicketsList = conciseTickets();
-	const doneTicketsCount = conciseTicketsList.filter(
+function getTicketsReport(): ticketsReport {
+	const conciseTicketsList: conciseTicket[] = conciseTickets();
+	const doneTicketsCount: number = conciseTicketsList.filter(
 		(ticket) => ticket.classification === "DONE",
 	).length;
-	const unassignedTicketsCount = conciseTicketsList.filter(
+	const unassignedTicketsCount: number = conciseTicketsList.filter(
 		(ticket) => ticket.classification === "UNASSIGNED",
 	).length;
-	const releaseBlockersCount = conciseTicketsList.filter(
+	const releaseBlockersCount: number = conciseTicketsList.filter(
 		(ticket) => ticket.classification === "RELEASE_BLOCKER",
 	).length;
-	const priorityTicketsCount = conciseTicketsList.filter(
+	const priorityTicketsCount: number = conciseTicketsList.filter(
 		(ticket) => ticket.classification === "PRIORITY",
 	).length;
-	const activeTicketsCount = conciseTicketsList.filter(
+	const activeTicketsCount: number = conciseTicketsList.filter(
 		(ticket) => ticket.classification === "ACTIVE",
 	).length;
 
-	const totalWorkHours = totalHours();
+	const totalWorkHours: number = totalHours();
 
-	let decision = "";
+	let decision: releaseDecision;
 
 	if (releaseBlockersCount > 0) {
 		decision = "BLOCK";
 	} else if (unassignedTicketsCount > 0) {
 		decision = "REVIEW";
-	} else if (totalHours > 35) {
+	} else if (totalWorkHours > 35) {
 		decision = "REVIEW";
 	} else {
 		decision = "RELEASE";
@@ -277,43 +322,43 @@ function ticketsReport() {
 	};
 }
 
-function displayTickets(ticketsList = tickets) {
+function displayTickets(ticketsList = tickets): void {
 	ticketsList.forEach((ticket) => {
-		const tr = document.createElement("tr");
+		const tr: HTMLTableRowElement = document.createElement("tr");
 
-		const tdId = document.createElement("td");
-		tdId.textContent = ticket.id;
+		const tdId: HTMLTableCellElement = document.createElement("td");
+		tdId.textContent = String(ticket.id);
 		tr.appendChild(tdId);
 
-		const tdTitle = document.createElement("td");
+		const tdTitle: HTMLTableCellElement = document.createElement("td");
 		tdTitle.textContent = ticket.title;
 		tr.appendChild(tdTitle);
 
-		const tdSeverity = document.createElement("td");
-		tdSeverity.textContent = ticket.severity;
+		const tdSeverity: HTMLTableCellElement = document.createElement("td");
+		tdSeverity.textContent = String(ticket.severity);
 		tr.appendChild(tdSeverity);
 
-		const tdStatus = document.createElement("td");
+		const tdStatus: HTMLTableCellElement = document.createElement("td");
 		tdStatus.textContent = ticket.status;
 		tr.appendChild(tdStatus);
 
-		const tdOwner = document.createElement("td");
+		const tdOwner: HTMLTableCellElement = document.createElement("td");
 		tdOwner.textContent = ticket.owner ? ticket.owner : "Unassigned";
 		tr.appendChild(tdOwner);
 
-		const tdRemainingHours = document.createElement("td");
-		tdRemainingHours.textContent = ticket.remainingHours;
+		const tdRemainingHours: HTMLTableCellElement = document.createElement("td");
+		tdRemainingHours.textContent = String(ticket.remainingHours);
 		tr.appendChild(tdRemainingHours);
 
-		const tdCustomerVip = document.createElement("td");
+		const tdCustomerVip: HTMLTableCellElement = document.createElement("td");
 		tdCustomerVip.textContent = ticket.customerVip ? "Yes" : "No";
 		tr.appendChild(tdCustomerVip);
 
-		const tdBlocked = document.createElement("td");
+		const tdBlocked: HTMLTableCellElement = document.createElement("td");
 		tdBlocked.textContent = ticket.blocked ? "Yes" : "No";
 		tr.appendChild(tdBlocked);
 
-		const tdClassification = document.createElement("td");
+		const tdClassification: HTMLTableCellElement = document.createElement("td");
 		tdClassification.textContent = classifyTicket(ticket);
 		tr.appendChild(tdClassification);
 
@@ -321,37 +366,36 @@ function displayTickets(ticketsList = tickets) {
 	});
 }
 
-function displayReleaseAnalysis() {
-	const report = ticketsReport();
+function displayReleaseAnalysis(): void {
+	const report: ticketsReport = getTicketsReport();
 
-	const decision = report.decision;
-	delete report.decision;
+	const decision: releaseDecision = report.decision;
 
-	const liTotalTickets = document.createElement("li");
+	const liTotalTickets: HTMLLIElement = document.createElement("li");
 	liTotalTickets.textContent = `Total Tickets: ${report.totalTickets}`;
 	ulReleaseAnalysis.appendChild(liTotalTickets);
 
-	const liDoneTickets = document.createElement("li");
+	const liDoneTickets: HTMLLIElement = document.createElement("li");
 	liDoneTickets.textContent = `Done Tickets: ${report.doneTickets}`;
 	ulReleaseAnalysis.appendChild(liDoneTickets);
 
-	const liUnassignedTickets = document.createElement("li");
+	const liUnassignedTickets: HTMLLIElement = document.createElement("li");
 	liUnassignedTickets.textContent = `Unassigned Tickets: ${report.unassignedTickets}`;
 	ulReleaseAnalysis.appendChild(liUnassignedTickets);
 
-	const liReleaseBlockers = document.createElement("li");
+	const liReleaseBlockers: HTMLLIElement = document.createElement("li");
 	liReleaseBlockers.textContent = `Release Blockers: ${report.releaseBlockers}`;
 	ulReleaseAnalysis.appendChild(liReleaseBlockers);
 
-	const liPriorityTickets = document.createElement("li");
+	const liPriorityTickets: HTMLLIElement = document.createElement("li");
 	liPriorityTickets.textContent = `Priority Tickets: ${report.priorityTickets}`;
 	ulReleaseAnalysis.appendChild(liPriorityTickets);
 
-	const liActiveTickets = document.createElement("li");
+	const liActiveTickets: HTMLLIElement = document.createElement("li");
 	liActiveTickets.textContent = `Active Tickets: ${report.activeTickets}`;
 	ulReleaseAnalysis.appendChild(liActiveTickets);
 
-	const liTotalRemainingHours = document.createElement("li");
+	const liTotalRemainingHours: HTMLLIElement = document.createElement("li");
 	liTotalRemainingHours.textContent = `Total Remaining Hours: ${report.totalRemainingHours}`;
 	ulReleaseAnalysis.appendChild(liTotalRemainingHours);
 
@@ -361,7 +405,7 @@ function displayReleaseAnalysis() {
 		case "BLOCK":
 			divReleaseDecision.classList.add("error");
 			break;
-		case "ALLOW":
+		case "RELEASE":
 			divReleaseDecision.classList.add("success");
 			break;
 		default:

@@ -1,0 +1,24 @@
+{
+  "name": "release-tickets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "original.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Davedov/release-tickets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Davedov/release-tickets/issues"
+  },
+  "homepage": "https://github.com/Davedov/release-tickets#readme",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
