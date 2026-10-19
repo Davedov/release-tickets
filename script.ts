@@ -191,6 +191,7 @@ const inputNewTicketCustomerVip = getRequiredElement<HTMLInputElement>(
 	"new-ticket-customer-vip",
 );
 const inputNewTicketBlocked = getRequiredElement<HTMLInputElement>("new-ticket-blocked");
+const pNewTicketMessage = getRequiredElement<HTMLElement>("new-ticket-message");
 //#endregion
 //#region global variables
 let ticketFilter: filterClassification = "all";
@@ -241,6 +242,18 @@ formNewTicket.addEventListener("submit", (event) => {
 	const blocked: boolean = inputNewTicketBlocked.checked;
 	const id: number = Math.max(...tickets.map((ticket) => ticket.id)) + 1;
 
+	if (!title || isNaN(severity) || !status || isNaN(remainingHours)) {
+		pNewTicketMessage.textContent = "Please fill in all fields.";
+		pNewTicketMessage.classList.remove("hidden");
+		return;
+	}
+
+	if (severity < 1 || severity > 5) {
+		pNewTicketMessage.textContent = "Severity must be between 1 and 5.";
+		pNewTicketMessage.classList.remove("hidden");
+		return;
+	}
+
 	const newTicket: ticket = {
 		id: id,
 		title: title,
@@ -257,6 +270,9 @@ formNewTicket.addEventListener("submit", (event) => {
 
 	filterTickets();
 	displayReleaseAnalysis();
+
+	formNewTicket.reset();
+	pNewTicketMessage.classList.add("hidden");
 });
 //#endregion
 //#region functions

@@ -73,6 +73,8 @@
 								id="new-ticket-severity"
 								name="severity"
 								placeholder="Severity"
+								min="1"
+								max="5"
 							/>
 						</label>
 						<label for="new-ticket-status">
@@ -106,6 +108,7 @@
 							<input type="checkbox" id="new-ticket-blocked" name="blocked" />
 						</label>
 						<button type="submit">Add Ticket</button>
+						<p id="new-ticket-message" class="message hidden"></p>
 					</fieldset>
 				</form>
 			</section>
