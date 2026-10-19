@@ -38,7 +38,7 @@ type ticketsReport = {
 };
 //#endregion
 //#region data
-const tickets: ticket[] = [
+let tickets: ticket[] = [
 	{
 		id: 101,
 		title: "Login outage",
@@ -160,6 +160,7 @@ const tickets: ticket[] = [
 		blocked: false,
 	},
 ];
+
 //#endregion
 //#region get elements
 function getRequiredElement<T extends HTMLElement>(id: string): T {
@@ -197,6 +198,13 @@ let ticketsSearch: string = "";
 //#endregion
 //#region event listeners
 document.addEventListener("DOMContentLoaded", () => {
+	const ticketsString = localStorage.getItem("tickets");
+	if (!ticketsString) {
+		localStorage.setItem("tickets", JSON.stringify(tickets));
+	} else {
+		tickets = JSON.parse(ticketsString);
+	}
+
 	displayTickets();
 	displayReleaseAnalysis();
 });
@@ -245,6 +253,8 @@ formNewTicket.addEventListener("submit", (event) => {
 	};
 
 	tickets.push(newTicket);
+	localStorage.setItem("tickets", JSON.stringify(tickets));
+
 	filterTickets();
 	displayReleaseAnalysis();
 });
