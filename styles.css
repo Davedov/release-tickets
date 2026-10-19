@@ -135,7 +135,34 @@ label {
 	margin: var(--margin);
 }
 
-input[type="text"] {
+form fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin);
+	margin: var(--margin) 0;
+	padding: var(--padding);
+	border-radius: var(--rounding);
+	border: 2px solid var(--primary-color);
+}
+
+form fieldset legend {
+	font-weight: bold;
+}
+
+form button {
+	padding: var(--padding);
+	border: 1px solid var(--primary-color);
+	border-radius: var(--rounding);
+	background-color: var(--card-background-color);
+	color: var(--text-color);
+	cursor: pointer;
+	width: fit-content;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
 	padding: var(--padding);
 	border: 1px solid var(--primary-color);
 	border-radius: var(--rounding);

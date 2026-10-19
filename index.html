@@ -57,6 +57,58 @@
 					<div id="release-decision" class="release-decision"></div>
 				</article>
 			</section>
+			<section>
+				<h2>Add New Ticket</h2>
+				<form id="new-ticket-form">
+					<fieldset>
+						<legend>Ticket Details</legend>
+						<label for="new-ticket-title">
+							Title:
+							<input type="text" id="new-ticket-title" name="title" placeholder="Title" />
+						</label>
+						<label for="new-ticket-severity">
+							Severity:
+							<input
+								type="number"
+								id="new-ticket-severity"
+								name="severity"
+								placeholder="Severity"
+							/>
+						</label>
+						<label for="new-ticket-status">
+							Status:
+							<select name="status" id="new-ticket-status">
+								<option value="" disabled selected>-Select Status-</option>
+								<option value="open">open</option>
+								<option value="done">Done</option>
+								<option value="testing">Testing</option>
+							</select>
+						</label>
+						<label for="new-ticket-owner">
+							Owner:
+							<input type="text" id="new-ticket-owner" name="owner" placeholder="Owner" />
+						</label>
+						<label for="new-ticket-remaining-hours">
+							Remaining Hours:
+							<input
+								type="number"
+								id="new-ticket-remaining-hours"
+								name="remaining-hours"
+								placeholder="Estimated Remaining Hours"
+							/>
+						</label>
+						<label for="new-ticket-customer-vip">
+							Customer VIP
+							<input type="checkbox" id="new-ticket-customer-vip" name="customer-vip" />
+						</label>
+						<label for="new-ticket-blocked">
+							Blocked
+							<input type="checkbox" id="new-ticket-blocked" name="blocked" />
+						</label>
+						<button type="submit">Add Ticket</button>
+					</fieldset>
+				</form>
+			</section>
 		</main>
 		<footer>
 			<p>&copy; 2026 Test tickets analysis. All rights reserved.</p>

@@ -177,6 +177,19 @@ const divReleaseDecision = getRequiredElement<HTMLElement>("release-decision");
 const ulClassificationFilters = getRequiredElement<HTMLElement>("classification-filters");
 const inputSearchBar = getRequiredElement<HTMLInputElement>("search-bar");
 const pNoTicketsMessage = getRequiredElement<HTMLElement>("no-tickets-message");
+
+const formNewTicket = getRequiredElement<HTMLFormElement>("new-ticket-form");
+const inputNewTicketTitle = getRequiredElement<HTMLInputElement>("new-ticket-title");
+const inputNewTicketSeverity = getRequiredElement<HTMLInputElement>("new-ticket-severity");
+const inputNewTicketStatus = getRequiredElement<HTMLSelectElement>("new-ticket-status");
+const inputNewTicketOwner = getRequiredElement<HTMLInputElement>("new-ticket-owner");
+const inputNewTicketRemainingHours = getRequiredElement<HTMLInputElement>(
+	"new-ticket-remaining-hours",
+);
+const inputNewTicketCustomerVip = getRequiredElement<HTMLInputElement>(
+	"new-ticket-customer-vip",
+);
+const inputNewTicketBlocked = getRequiredElement<HTMLInputElement>("new-ticket-blocked");
 //#endregion
 //#region global variables
 let ticketFilter: filterClassification = "all";
@@ -207,9 +220,36 @@ inputSearchBar.addEventListener("input", (event) => {
 	ticketsSearch = event.target.value.toLowerCase();
 	filterTickets();
 });
+
+formNewTicket.addEventListener("submit", (event) => {
+	event.preventDefault();
+
+	const title: string = inputNewTicketTitle.value.trim();
+	const severity: number = parseInt(inputNewTicketSeverity.value);
+	const status: ticketStatus = inputNewTicketStatus.value as ticketStatus;
+	const owner: string | null = inputNewTicketOwner.value.trim() || null;
+	const remainingHours: number = parseInt(inputNewTicketRemainingHours.value);
+	const customerVip: boolean = inputNewTicketCustomerVip.checked;
+	const blocked: boolean = inputNewTicketBlocked.checked;
+	const id: number = Math.max(...tickets.map((ticket) => ticket.id)) + 1;
+
+	const newTicket: ticket = {
+		id: id,
+		title: title,
+		severity: severity,
+		status: status,
+		owner: owner,
+		remainingHours: remainingHours,
+		customerVip: customerVip,
+		blocked: blocked,
+	};
+
+	tickets.push(newTicket);
+	filterTickets();
+	displayReleaseAnalysis();
+});
 //#endregion
 //#region functions
-
 function filterTickets(ticketsList: ticket[] = tickets): void {
 	const filteredTickets: ticket[] = ticketsList.filter((ticket) => {
 		const title: string = ticket.title.toLowerCase();
@@ -370,6 +410,8 @@ function displayReleaseAnalysis(): void {
 	const report: ticketsReport = getTicketsReport();
 
 	const decision: releaseDecision = report.decision;
+
+	ulReleaseAnalysis.innerHTML = "";
 
 	const liTotalTickets: HTMLLIElement = document.createElement("li");
 	liTotalTickets.textContent = `Total Tickets: ${report.totalTickets}`;
