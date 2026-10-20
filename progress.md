@@ -1,7 +1,24 @@
-## Monday 19 October
+# Daily Progress Report
+
+**Reminder**: A successful TypeScript type-check does not prove the browser works. Verify both. Everyday submission in classroom – GitHub repo link.
+
+## Template
 
 Completed:
-Working in browser:
+In progress:
+Blockers:
+Tomorrows first task:
+
+## Monday 19 October
+
+Completed: display tickets, display release analysis, add tickets, filter tickets by classification, search for tickets by title, Add new tickets.
+In progress: none
 Blockers: none
-Tuesday’s first task: edit and delete tickets
-Reminder: A successful TypeScript type-check does not prove the browser works. Verify both. Everyday submission in classroom – GitHub repo link.
+Tomorrows first task: edit and delete tickets
+
+## Tuesday 20 October
+
+Completed: edit and delete tickets
+In progress: none  
+Blockers: none  
+Tomorrows first task: search tickets by id if search term is all numbers

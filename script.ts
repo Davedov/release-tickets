@@ -192,6 +192,21 @@ const inputNewTicketCustomerVip = getRequiredElement<HTMLInputElement>(
 );
 const inputNewTicketBlocked = getRequiredElement<HTMLInputElement>("new-ticket-blocked");
 const pNewTicketMessage = getRequiredElement<HTMLElement>("new-ticket-message");
+
+const formEditTicket = getRequiredElement<HTMLFormElement>("edit-ticket-form");
+const inputEditTicketId = getRequiredElement<HTMLInputElement>("edit-ticket-id");
+const inputEditTicketTitle = getRequiredElement<HTMLInputElement>("edit-ticket-title");
+const inputEditTicketSeverity = getRequiredElement<HTMLInputElement>("edit-ticket-severity");
+const inputEditTicketStatus = getRequiredElement<HTMLSelectElement>("edit-ticket-status");
+const inputEditTicketOwner = getRequiredElement<HTMLInputElement>("edit-ticket-owner");
+const inputEditTicketRemainingHours = getRequiredElement<HTMLInputElement>(
+	"edit-ticket-remaining-hours",
+);
+const inputEditTicketCustomerVip = getRequiredElement<HTMLInputElement>(
+	"edit-ticket-customer-vip",
+);
+const inputEditTicketBlocked = getRequiredElement<HTMLInputElement>("edit-ticket-blocked");
+const pEditTicketMessage = getRequiredElement<HTMLElement>("edit-ticket-message");
 //#endregion
 //#region global variables
 let ticketFilter: filterClassification = "all";
@@ -265,14 +280,76 @@ formNewTicket.addEventListener("submit", (event) => {
 		blocked: blocked,
 	};
 
-	tickets.push(newTicket);
-	localStorage.setItem("tickets", JSON.stringify(tickets));
-
-	filterTickets();
-	displayReleaseAnalysis();
+	addTicket(newTicket);
 
 	formNewTicket.reset();
 	pNewTicketMessage.classList.add("hidden");
+});
+
+formEditTicket.addEventListener("submit", (event) => {
+	event.preventDefault();
+
+	const id: number = parseInt(inputEditTicketId.value);
+	const index: number = tickets.findIndex((ticket) => ticket.id === id);
+
+	if (index === -1) {
+		pEditTicketMessage.textContent = "no ticket with that id";
+		pEditTicketMessage.classList.remove("hidden");
+		return;
+	}
+
+	const ticketToEdit: ticket = tickets[index];
+
+	if (event.submitter?.dataset.action === "delete") {
+		tickets.splice(index, 1);
+		saveTickets();
+
+		formEditTicket.reset();
+		pEditTicketMessage.classList.add("hidden");
+
+		return;
+	}
+
+	const title: string = inputEditTicketTitle.value.trim();
+	const severity: number = parseInt(inputEditTicketSeverity.value);
+	const status: ticketStatus = inputEditTicketStatus.value as ticketStatus;
+	const owner: string | null = inputEditTicketOwner.value.trim() || null;
+	const remainingHours: number = parseInt(inputEditTicketRemainingHours.value);
+	const customerVip: boolean = inputEditTicketCustomerVip.checked;
+	const blocked: boolean = inputEditTicketBlocked.checked;
+
+	if (
+		!title &&
+		isNaN(severity) &&
+		!status &&
+		isNaN(remainingHours) &&
+		!owner &&
+		customerVip === ticketToEdit.customerVip &&
+		blocked === ticketToEdit.blocked
+	) {
+		pEditTicketMessage.textContent = "Please fill in at least one field to update.";
+		pEditTicketMessage.classList.remove("hidden");
+		return;
+	}
+
+	if (severity && (severity < 1 || severity > 5)) {
+		pEditTicketMessage.textContent = "Severity must be between 1 and 5.";
+		pEditTicketMessage.classList.remove("hidden");
+		return;
+	}
+
+	if (title) ticketToEdit.title = title;
+	if (!isNaN(severity)) ticketToEdit.severity = severity;
+	if (status) ticketToEdit.status = status;
+	if (!isNaN(remainingHours)) ticketToEdit.remainingHours = remainingHours;
+	if (owner) ticketToEdit.owner = owner;
+	ticketToEdit.customerVip = customerVip;
+	ticketToEdit.blocked = blocked;
+
+	saveTickets();
+
+	formEditTicket.reset();
+	pEditTicketMessage.classList.add("hidden");
 });
 //#endregion
 //#region functions
@@ -479,5 +556,17 @@ function displayReleaseAnalysis(): void {
 		default:
 			divReleaseDecision.classList.add("warning");
 	}
+}
+
+function addTicket(newTicket: ticket): void {
+	tickets.push(newTicket);
+	saveTickets();
+}
+
+function saveTickets(): void {
+	localStorage.setItem("tickets", JSON.stringify(tickets));
+
+	filterTickets();
+	displayReleaseAnalysis();
 }
 //#endregion

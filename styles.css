@@ -87,6 +87,13 @@ td {
 	border-collapse: collapse;
 }
 
+section {
+	margin-bottom: var(--margin);
+	padding: var(--padding);
+	border: 1px solid var(--primary-color);
+	border-radius: var(--rounding);
+}
+
 .main-info {
 	display: flex;
 	flex-direction: row;
@@ -133,6 +140,12 @@ button.selected {
 
 label {
 	margin: var(--margin);
+}
+
+form {
+	border: 1px solid var(--primary-color);
+	border-radius: var(--rounding);
+	padding: var(--padding);
 }
 
 form fieldset {

@@ -107,9 +107,77 @@
 							Blocked
 							<input type="checkbox" id="new-ticket-blocked" name="blocked" />
 						</label>
-						<button type="submit">Add Ticket</button>
-						<p id="new-ticket-message" class="message hidden"></p>
 					</fieldset>
+					<button type="submit">Add Ticket</button>
+					<p id="new-ticket-message" class="message hidden"></p>
+				</form>
+			</section>
+			<section>
+				<h2>Edit or Delete Ticket</h2>
+				<form id="edit-ticket-form">
+					<fieldset>
+						<legend>Ticket ID</legend>
+						<label for="edit-ticket-id">
+							Ticket ID:
+							<input
+								type="number"
+								id="edit-ticket-id"
+								name="ticket-id"
+								placeholder="Ticket ID"
+							/>
+						</label>
+					</fieldset>
+					<button type="submit" data-action="delete">Delete Ticket</button>
+					<fieldset>
+						<legend>Ticket Details</legend>
+						<label for="edit-ticket-title">
+							Title:
+							<input type="text" id="edit-ticket-title" name="title" placeholder="Title" />
+						</label>
+						<label for="edit-ticket-severity">
+							Severity:
+							<input
+								type="number"
+								id="edit-ticket-severity"
+								name="severity"
+								placeholder="Severity"
+								min="1"
+								max="5"
+							/>
+						</label>
+						<label for="edit-ticket-status">
+							Status:
+							<select name="status" id="edit-ticket-status">
+								<option value="" disabled selected>-Select Status-</option>
+								<option value="open">Open</option>
+								<option value="done">Done</option>
+								<option value="testing">Testing</option>
+							</select>
+						</label>
+						<label for="edit-ticket-owner">
+							Owner:
+							<input type="text" id="edit-ticket-owner" name="owner" placeholder="Owner" />
+						</label>
+						<label for="edit-ticket-remaining-hours">
+							Remaining Hours:
+							<input
+								type="number"
+								id="edit-ticket-remaining-hours"
+								name="remaining-hours"
+								placeholder="Estimated Remaining Hours"
+							/>
+						</label>
+						<label for="edit-ticket-customer-vip">
+							Customer VIP
+							<input type="checkbox" id="edit-ticket-customer-vip" name="customer-vip" />
+						</label>
+						<label for="edit-ticket-blocked">
+							Blocked
+							<input type="checkbox" id="edit-ticket-blocked" name="blocked" />
+						</label>
+					</fieldset>
+					<button type="submit" data-action="edit">Edit Ticket</button>
+					<p id="edit-ticket-message" class="message hidden"></p>
 				</form>
 			</section>
 		</main>
