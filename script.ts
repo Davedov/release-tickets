@@ -241,7 +241,7 @@ ulClassificationFilters.addEventListener("click", (event) => {
 inputSearchBar.addEventListener("input", (event) => {
 	if (!(event.target instanceof HTMLInputElement)) return;
 
-	ticketsSearch = event.target.value.toLowerCase();
+	ticketsSearch = event.target.value.toLowerCase().trim();
 	filterTickets();
 });
 
@@ -354,14 +354,22 @@ formEditTicket.addEventListener("submit", (event) => {
 //#endregion
 //#region functions
 function filterTickets(ticketsList: ticket[] = tickets): void {
+	const regex = /^[0-9]+$/;
+	let searchId: number;
+
+	if (regex.test(ticketsSearch)) {
+		searchId = parseInt(ticketsSearch);
+	}
+
 	const filteredTickets: ticket[] = ticketsList.filter((ticket) => {
 		const title: string = ticket.title.toLowerCase();
 		const classification: filterClassification = classifyTicket(
 			ticket,
 		).toLowerCase() as filterClassification;
 		return (
-			title.includes(ticketsSearch) &&
-			(ticketFilter === "all" || classification === ticketFilter)
+			(searchId !== undefined && ticket.id === searchId) ||
+			(title.includes(ticketsSearch) &&
+				(ticketFilter === "all" || classification === ticketFilter))
 		);
 	});
 
