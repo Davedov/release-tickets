@@ -202,10 +202,10 @@ const inputEditTicketOwner = getRequiredElement<HTMLInputElement>("edit-ticket-o
 const inputEditTicketRemainingHours = getRequiredElement<HTMLInputElement>(
 	"edit-ticket-remaining-hours",
 );
-const inputEditTicketCustomerVip = getRequiredElement<HTMLInputElement>(
+const inputEditTicketCustomerVip = getRequiredElement<HTMLSelectElement>(
 	"edit-ticket-customer-vip",
 );
-const inputEditTicketBlocked = getRequiredElement<HTMLInputElement>("edit-ticket-blocked");
+const inputEditTicketBlocked = getRequiredElement<HTMLSelectElement>("edit-ticket-blocked");
 const pEditTicketMessage = getRequiredElement<HTMLElement>("edit-ticket-message");
 //#endregion
 //#region global variables
@@ -315,8 +315,18 @@ formEditTicket.addEventListener("submit", (event) => {
 	const status: ticketStatus = inputEditTicketStatus.value as ticketStatus;
 	const owner: string | null = inputEditTicketOwner.value.trim() || null;
 	const remainingHours: number = parseInt(inputEditTicketRemainingHours.value);
-	const customerVip: boolean = inputEditTicketCustomerVip.checked;
-	const blocked: boolean = inputEditTicketBlocked.checked;
+	const customerVip: boolean | null =
+		inputEditTicketCustomerVip.value === "true"
+			? true
+			: inputEditTicketCustomerVip.value === "false"
+				? false
+				: null;
+	const blocked: boolean | null =
+		inputEditTicketBlocked.value === "true"
+			? true
+			: inputEditTicketBlocked.value === "false"
+				? false
+				: null;
 
 	if (
 		!title &&
@@ -324,8 +334,8 @@ formEditTicket.addEventListener("submit", (event) => {
 		!status &&
 		isNaN(remainingHours) &&
 		!owner &&
-		customerVip === ticketToEdit.customerVip &&
-		blocked === ticketToEdit.blocked
+		customerVip === null &&
+		blocked === null
 	) {
 		pEditTicketMessage.textContent = "Please fill in at least one field to update.";
 		pEditTicketMessage.classList.remove("hidden");
@@ -343,8 +353,8 @@ formEditTicket.addEventListener("submit", (event) => {
 	if (status) ticketToEdit.status = status;
 	if (!isNaN(remainingHours)) ticketToEdit.remainingHours = remainingHours;
 	if (owner) ticketToEdit.owner = owner;
-	ticketToEdit.customerVip = customerVip;
-	ticketToEdit.blocked = blocked;
+	if (customerVip !== null) ticketToEdit.customerVip = customerVip;
+	if (blocked !== null) ticketToEdit.blocked = blocked;
 
 	saveTickets();
 

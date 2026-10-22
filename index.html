@@ -169,11 +169,19 @@
 						</label>
 						<label for="edit-ticket-customer-vip">
 							Customer VIP
-							<input type="checkbox" id="edit-ticket-customer-vip" name="customer-vip" />
+							<select name="edit-customer-vip" id="edit-ticket-customer-vip">
+								<option value="" disabled selected>-Select-</option>
+								<option value="true">Yes</option>
+								<option value="false">No</option>
+							</select>
 						</label>
 						<label for="edit-ticket-blocked">
 							Blocked
-							<input type="checkbox" id="edit-ticket-blocked" name="blocked" />
+							<select name="edit-blocked" id="edit-ticket-blocked">
+								<option value="" disabled selected>-Select-</option>
+								<option value="true">Yes</option>
+								<option value="false">No</option>
+							</select>
 						</label>
 					</fieldset>
 					<button type="submit" data-action="edit">Edit Ticket</button>
